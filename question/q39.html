@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>セキュリティ - q39</title>
+<meta name="robots" content="noindex">
+<style>
+  body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
+  h1{font-size:16px;color:#4C5A70;font-weight:600;}
+  .question{font-size:17px;margin:16px 0;}
+  ul{list-style:none;padding:0;}
+  li{padding:8px 12px;border:1px solid #D2DAE3;border-radius:4px;margin-bottom:8px;}
+  li.correct{border-color:#2F6F6D;background:#EAF3F2;font-weight:600;}
+  .explain{margin-top:20px;padding-top:16px;border-top:1px dashed #D2DAE3;}
+  .label{font-size:12px;color:#4C5A70;font-weight:600;margin-bottom:6px;}
+</style>
+</head>
+<body>
+  <h1>応用情報技術者試験 - セキュリティ（q39）</h1>
+  <div class="question">CRLに関する記述のうち、適切なものはどれか。</div>
+  <ul>
+      <li>ア: RFC 5280では、認証局は、発行したデジタル証明書のうち失効したものについては、シリアル番号を失効後1年間CRLに記載するよう義務付けている。</li>
+      <li>イ: Webサイトの利用者のWebブラウザは、そのWebサイトにサーバ証明書を発行した認証局の公開鍵がWebブラウザに組み込まれていれば、CRLを参照しなくてもよい。</li>
+      <li>ウ: 認証局は、発行した全てのデジタル証明書の有効期限をCRLに記載する。</li>
+      <li class="correct">エ: 認証局は、有効期限内のデジタル証明書が失効されたとき、そのシリアル番号をCRLに記載する。</li>
+  </ul>
+  <div class="explain">
+    <div class="label">正解</div>
+    <div>エ: 認証局は、有効期限内のデジタル証明書が失効されたとき、そのシリアル番号をCRLに記載する。</div>
+    <div class="label" style="margin-top:14px;">解説</div>
+    <div>認証局は、有効期限内のデジタル証明書が失効したとき、そのシリアル番号をCRLに記載する。</div>
+  </div>
+</body>
+</html>

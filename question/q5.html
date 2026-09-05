@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>セキュリティ - q5</title>
+<title>ソフトウェア（メモリ管理） - q5</title>
 <meta name="robots" content="noindex">
 <style>
   body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-  <h1>応用情報技術者試験 - セキュリティ（q5）</h1>
-  <div class="question">SQLインジェクション対策として最も直接的に有効な方法はどれか。</div>
+  <h1>応用情報技術者試験 - ソフトウェア（メモリ管理）（q5）</h1>
+  <div class="question">記憶領域を管理するアルゴリズムのうち、ベストフィット方式の特徴として、適切なものはどれか。</div>
   <ul>
-      <li>ア: SSL/TLSによる通信の暗号化</li>
-      <li class="correct">イ: プレースホルダを用いたバインド機構（プリペアドステートメント）の利用</li>
-      <li>ウ: パスワードの定期変更</li>
-      <li>エ: ファイアウォールの導入</li>
+      <li>ア: 空きブロック群のうち、アドレスが下位のブロックを高い頻度で使用するので、アドレスが上位の方に大きな空きブロックが残る傾向にある。</li>
+      <li class="correct">イ: 空きブロック群のうち、要求された大きさを満たす最小のものを割り当てるので、最終的には小さな空きブロックが多数残る傾向にある。</li>
+      <li>ウ: 空きブロックの検索にハッシュ関数を使用しているので、高速に検索することができる。</li>
+      <li>エ: 空きブロックをアドレスの昇順に管理しているので、隣接する空きブロックを簡単に見つけられ、より大きな空きブロックにまとめることができる。</li>
   </ul>
   <div class="explain">
     <div class="label">正解</div>
-    <div>イ: プレースホルダを用いたバインド機構（プリペアドステートメント）の利用</div>
+    <div>イ: 空きブロック群のうち、要求された大きさを満たす最小のものを割り当てるので、最終的には小さな空きブロックが多数残る傾向にある。</div>
     <div class="label" style="margin-top:14px;">解説</div>
-    <div>SQLインジェクションはユーザ入力がSQL文の構造を書き換えることで発生するため、プレースホルダとバインド機構を使い入力値をデータとして扱うことが最も直接的な対策となる。</div>
+    <div>ベストフィット方式は要求サイズを満たす最小の空きブロックを割り当てるため、割当て後に使い道の少ない小さな断片が多数残りやすい。</div>
   </div>
 </body>
 </html>

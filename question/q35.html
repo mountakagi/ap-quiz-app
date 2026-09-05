@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>アルゴリズム - q1</title>
+<title>ネットワーク - q35</title>
 <meta name="robots" content="noindex">
 <style>
   body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-  <h1>応用情報技術者試験 - アルゴリズム（q1）</h1>
-  <div class="question">A, B, C, Dを論理変数とするとき、次のカルノー図と等価な論理式はどれか。ここで、・は論理積，＋は論理和，X̄はXの否定を表す。（カルノー図：CD=00/01/11/10 × AB=00/01/11/10 の値は 00行:1,0,0,1 / 01行:0,1,1,0 / 11行:0,1,1,0 / 10行:0,0,0,0）</div>
+  <h1>応用情報技術者試験 - ネットワーク（q35）</h1>
+  <div class="question">ビット誤り率が0.0001%の回線を使って、1,500バイトのパケットを10,000個送信するとき、誤りが含まれるパケットの個数の期待値はおよそ幾らか。</div>
   <ul>
-      <li>ア: A・B・C̄・D＋B̄・D̄</li>
-      <li>イ: Ā・B̄・C̄・D̄＋B・D</li>
-      <li>ウ: A・B・D＋B̄・D̄</li>
-      <li class="correct">エ: Ā・B̄・D̄＋B・D</li>
+      <li>ア: 10</li>
+      <li>イ: 15</li>
+      <li>ウ: 80</li>
+      <li class="correct">エ: 120</li>
   </ul>
   <div class="explain">
     <div class="label">正解</div>
-    <div>エ: Ā・B̄・D̄＋B・D</div>
+    <div>エ: 120</div>
     <div class="label" style="margin-top:14px;">解説</div>
-    <div>1になっているマスをグルーピングすると、AB=00の行でCDによらず1になる部分（Ā・B̄・D̄）と、B・Dが1のセルの共通項（B・D）の和にまとまる。</div>
+    <div>1,500バイト=12,000ビット、誤り率0.000001を掛けると1パケットあたり約0.012。10,000個で期待値は0.012×10,000=120。</div>
   </div>
 </body>
 </html>

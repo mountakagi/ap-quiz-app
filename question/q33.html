@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>アルゴリズム - q1</title>
+<title>ネットワーク - q33</title>
 <meta name="robots" content="noindex">
 <style>
   body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-  <h1>応用情報技術者試験 - アルゴリズム（q1）</h1>
-  <div class="question">A, B, C, Dを論理変数とするとき、次のカルノー図と等価な論理式はどれか。ここで、・は論理積，＋は論理和，X̄はXの否定を表す。（カルノー図：CD=00/01/11/10 × AB=00/01/11/10 の値は 00行:1,0,0,1 / 01行:0,1,1,0 / 11行:0,1,1,0 / 10行:0,0,0,0）</div>
+  <h1>応用情報技術者試験 - ネットワーク（q33）</h1>
+  <div class="question">UDPのヘッダーフィールドにはないが、TCPのヘッダーフィールドには含まれる情報はどれか。</div>
   <ul>
-      <li>ア: A・B・C̄・D＋B̄・D̄</li>
-      <li>イ: Ā・B̄・C̄・D̄＋B・D</li>
-      <li>ウ: A・B・D＋B̄・D̄</li>
-      <li class="correct">エ: Ā・B̄・D̄＋B・D</li>
+      <li>ア: 宛先ポート番号</li>
+      <li class="correct">イ: シーケンス番号</li>
+      <li>ウ: 送信元ポート番号</li>
+      <li>エ: チェックサム</li>
   </ul>
   <div class="explain">
     <div class="label">正解</div>
-    <div>エ: Ā・B̄・D̄＋B・D</div>
+    <div>イ: シーケンス番号</div>
     <div class="label" style="margin-top:14px;">解説</div>
-    <div>1になっているマスをグルーピングすると、AB=00の行でCDによらず1になる部分（Ā・B̄・D̄）と、B・Dが1のセルの共通項（B・D）の和にまとまる。</div>
+    <div>シーケンス番号は、コネクション型で順序制御を行うTCPのヘッダーに含まれるが、UDPのヘッダーには含まれない。</div>
   </div>
 </body>
 </html>

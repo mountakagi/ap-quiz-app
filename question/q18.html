@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ソフトウェア（OS） - q18</title>
+<meta name="robots" content="noindex">
+<style>
+  body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
+  h1{font-size:16px;color:#4C5A70;font-weight:600;}
+  .question{font-size:17px;margin:16px 0;}
+  ul{list-style:none;padding:0;}
+  li{padding:8px 12px;border:1px solid #D2DAE3;border-radius:4px;margin-bottom:8px;}
+  li.correct{border-color:#2F6F6D;background:#EAF3F2;font-weight:600;}
+  .explain{margin-top:20px;padding-top:16px;border-top:1px dashed #D2DAE3;}
+  .label{font-size:12px;color:#4C5A70;font-weight:600;margin-bottom:6px;}
+</style>
+</head>
+<body>
+  <h1>応用情報技術者試験 - ソフトウェア（OS）（q18）</h1>
+  <div class="question">二つのタスクが共用する二つの資源を排他的に使用するとき、デッドロックが発生するおそれがある。このデッドロックの発生を防ぐ方法はどれか。</div>
+  <ul>
+      <li>ア: 一方のタスクの優先度を高くする。</li>
+      <li class="correct">イ: 資源獲得の順序を両方のタスクで同じにする。</li>
+      <li>ウ: 資源獲得の順序を両方のタスクで逆にする。</li>
+      <li>エ: 両方のタスクの優先度を同じにする。</li>
+  </ul>
+  <div class="explain">
+    <div class="label">正解</div>
+    <div>イ: 資源獲得の順序を両方のタスクで同じにする。</div>
+    <div class="label" style="margin-top:14px;">解説</div>
+    <div>資源獲得の順序を全タスクで統一することで循環待ちの状態が起こらなくなり、デッドロックを防止できる。</div>
+  </div>
+</body>
+</html>

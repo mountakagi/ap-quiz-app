@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>プロジェクトマネジメント - q4</title>
+<title>ハードウェア（誤り制御） - q4</title>
 <meta name="robots" content="noindex">
 <style>
   body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-  <h1>応用情報技術者試験 - プロジェクトマネジメント（q4）</h1>
-  <div class="question">PERT図におけるクリティカルパスの説明として、最も適切なものはどれか。</div>
+  <h1>応用情報技術者試験 - ハードウェア（誤り制御）（q4）</h1>
+  <div class="question">誤り検出方式であるCRCに関する記述として、適切なものはどれか。</div>
   <ul>
-      <li>ア: 最もコストが高い経路</li>
-      <li>イ: 最も所要時間が短い経路</li>
-      <li class="correct">ウ: 全体の所要期間を決定する、最も所要時間が長い経路</li>
-      <li>エ: リスクが最も高い経路</li>
+      <li>ア: 検査用のデータは、検査対象のデータを生成多項式で処理して得られる1ビットの値である。</li>
+      <li>イ: 受信側では、付加されてきた検査用のデータで検査対象のデータを割り、余りがなければ送信が正しかったと判断する。</li>
+      <li class="correct">ウ: 送信側では、生成多項式を用いて検査対象のデータから検査用のデータを作り、これを検査対象のデータに付けて送信する。</li>
+      <li>エ: 送信側と受信側では、異なる生成多項式が用いられる。</li>
   </ul>
   <div class="explain">
     <div class="label">正解</div>
-    <div>ウ: 全体の所要期間を決定する、最も所要時間が長い経路</div>
+    <div>ウ: 送信側では、生成多項式を用いて検査対象のデータから検査用のデータを作り、これを検査対象のデータに付けて送信する。</div>
     <div class="label" style="margin-top:14px;">解説</div>
-    <div>クリティカルパスは、開始から終了までの経路のうち所要時間が最長のものであり、この経路上の作業が遅れるとプロジェクト全体の完了が遅延する。</div>
+    <div>CRCは送信側で生成多項式を用いて検査用データを生成し、検査対象データに付加して送信する誤り検出方式である。</div>
   </div>
 </body>
 </html>

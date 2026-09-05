@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>データベース - q3</title>
+<title>アルゴリズム（機械学習） - q3</title>
 <meta name="robots" content="noindex">
 <style>
   body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-  <h1>応用情報技術者試験 - データベース（q3）</h1>
-  <div class="question">第3正規形の説明として最も適切なものはどれか。</div>
+  <h1>応用情報技術者試験 - アルゴリズム（機械学習）（q3）</h1>
+  <div class="question">AIにおける機械学習において、2クラス分類モデルの評価方法の一つであるROC曲線で用いられる偽陽性率の説明として、最も適切なものはどれか。</div>
   <ul>
-      <li>ア: 繰返し項目を排除した状態</li>
-      <li>イ: 部分関数従属を排除した状態</li>
-      <li class="correct">ウ: 推移的関数従属を排除した状態</li>
-      <li>エ: 多値従属性を排除した状態</li>
+      <li>ア: “間違い”と予測したデータのうち、実際は“正しい”データの割合</li>
+      <li class="correct">イ: 実際に“間違い”であるデータに対し、誤って“正しい”と予測したデータの割合</li>
+      <li>ウ: 実際に“間違い”であるデータに対し、正しく“間違い”と予測したデータの割合</li>
+      <li>エ: 全データのうち、実際に正しく予測できなかったデータの割合</li>
   </ul>
   <div class="explain">
     <div class="label">正解</div>
-    <div>ウ: 推移的関数従属を排除した状態</div>
+    <div>イ: 実際に“間違い”であるデータに対し、誤って“正しい”と予測したデータの割合</div>
     <div class="label" style="margin-top:14px;">解説</div>
-    <div>第3正規形は、第2正規形を満たした上で、非キー属性間の推移的関数従属（非キー属性が他の非キー属性に従属する関係）を排除した状態を指す。</div>
+    <div>偽陽性率(FPR)は、実際は陰性（間違い）であるデータのうち、誤って陽性（正しい）と予測してしまった割合を表す。</div>
   </div>
 </body>
 </html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>データベース - q27</title>
+<meta name="robots" content="noindex">
+<style>
+  body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
+  h1{font-size:16px;color:#4C5A70;font-weight:600;}
+  .question{font-size:17px;margin:16px 0;}
+  ul{list-style:none;padding:0;}
+  li{padding:8px 12px;border:1px solid #D2DAE3;border-radius:4px;margin-bottom:8px;}
+  li.correct{border-color:#2F6F6D;background:#EAF3F2;font-weight:600;}
+  .explain{margin-top:20px;padding-top:16px;border-top:1px dashed #D2DAE3;}
+  .label{font-size:12px;color:#4C5A70;font-weight:600;margin-bottom:6px;}
+</style>
+</head>
+<body>
+  <h1>応用情報技術者試験 - データベース（q27）</h1>
+  <div class="question">“売上”表への次の検索処理のうち、B+木インデックスよりもハッシュインデックスを設定した方が適切なものはどれか。（利用者IDが‘1001’の売上を検索する。&lt;利用者ID&gt;）</div>
+  <ul>
+      <li>ア: 売上金額が1万円以上の売上を検索する。&lt;売上金額&gt;</li>
+      <li>イ: 売上年月日が今月の売上を検索する。&lt;売上年月日&gt;</li>
+      <li>ウ: 商品名が‘DB’で始まる売上を検索する。&lt;商品名&gt;</li>
+      <li class="correct">エ: 利用者IDが‘1001’の売上を検索する。&lt;利用者ID&gt;</li>
+  </ul>
+  <div class="explain">
+    <div class="label">正解</div>
+    <div>エ: 利用者IDが‘1001’の売上を検索する。&lt;利用者ID&gt;</div>
+    <div class="label" style="margin-top:14px;">解説</div>
+    <div>特定の値との完全一致（等価）検索にはハッシュインデックスが適しており、範囲検索や前方一致検索にはB+木が適している。</div>
+  </div>
+</body>
+</html>

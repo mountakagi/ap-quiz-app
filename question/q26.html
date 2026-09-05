@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>データベース - q26</title>
+<meta name="robots" content="noindex">
+<style>
+  body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
+  h1{font-size:16px;color:#4C5A70;font-weight:600;}
+  .question{font-size:17px;margin:16px 0;}
+  ul{list-style:none;padding:0;}
+  li{padding:8px 12px;border:1px solid #D2DAE3;border-radius:4px;margin-bottom:8px;}
+  li.correct{border-color:#2F6F6D;background:#EAF3F2;font-weight:600;}
+  .explain{margin-top:20px;padding-top:16px;border-top:1px dashed #D2DAE3;}
+  .label{font-size:12px;color:#4C5A70;font-weight:600;margin-bottom:6px;}
+</style>
+</head>
+<body>
+  <h1>応用情報技術者試験 - データベース（q26）</h1>
+  <div class="question">BASE特性を満たし、次の特徴をもつNoSQLデータベースシステムに関する記述のうち、適切なものはどれか。〔特徴〕ネットワーク上に分散した複数のノードから構成される。一つのノードでデータを更新した後、他の全てのノードにその更新を反映する。</div>
+  <ul>
+      <li>ア: クライアントからの更新要求を2相コミットによって全てのノードに反映する。</li>
+      <li class="correct">イ: データの更新結果は、システムに障害がなければ、いつかは全てのノードに反映される。</li>
+      <li>ウ: 同一の主キーの値による同時の参照要求に対し、全てのノードは同じ結果を返す。</li>
+      <li>エ: ノード間のネットワークが分断されると、クライアントからの処理要求を受け付けなくなる。</li>
+  </ul>
+  <div class="explain">
+    <div class="label">正解</div>
+    <div>イ: データの更新結果は、システムに障害がなければ、いつかは全てのノードに反映される。</div>
+    <div class="label" style="margin-top:14px;">解説</div>
+    <div>BASE特性の結果整合性は、障害がなければ最終的にはすべてのノードに更新が反映されることを意味する。</div>
+  </div>
+</body>
+</html>

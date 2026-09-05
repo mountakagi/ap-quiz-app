@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>アルゴリズム - q1</title>
+<title>ハードウェア（電子回路） - q20</title>
 <meta name="robots" content="noindex">
 <style>
   body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-  <h1>応用情報技術者試験 - アルゴリズム（q1）</h1>
-  <div class="question">A, B, C, Dを論理変数とするとき、次のカルノー図と等価な論理式はどれか。ここで、・は論理積，＋は論理和，X̄はXの否定を表す。（カルノー図：CD=00/01/11/10 × AB=00/01/11/10 の値は 00行:1,0,0,1 / 01行:0,1,1,0 / 11行:0,1,1,0 / 10行:0,0,0,0）</div>
+  <h1>応用情報技術者試験 - ハードウェア（電子回路）（q20）</h1>
+  <div class="question">図のLED点灯回路において、LEDに10ミリAの電流が流れるように抵抗値を決定したときに、回路全体の消費電力に占めるLEDの消費電力の割合は何%か。ここで、LEDの順方向電圧は2Vとし、電源の消費電力は無視するものとする。（電源電圧10V）</div>
   <ul>
-      <li>ア: A・B・C̄・D＋B̄・D̄</li>
-      <li>イ: Ā・B̄・C̄・D̄＋B・D</li>
-      <li>ウ: A・B・D＋B̄・D̄</li>
-      <li class="correct">エ: Ā・B̄・D̄＋B・D</li>
+      <li class="correct">ア: 20</li>
+      <li>イ: 25</li>
+      <li>ウ: 80</li>
+      <li>エ: 100</li>
   </ul>
   <div class="explain">
     <div class="label">正解</div>
-    <div>エ: Ā・B̄・D̄＋B・D</div>
+    <div>ア: 20</div>
     <div class="label" style="margin-top:14px;">解説</div>
-    <div>1になっているマスをグルーピングすると、AB=00の行でCDによらず1になる部分（Ā・B̄・D̄）と、B・Dが1のセルの共通項（B・D）の和にまとまる。</div>
+    <div>LEDの消費電力=2V×10mA=20mW、抵抗の消費電力=(10-2)V×10mA=80mW、合計100mWのうちLEDは20%を占める。</div>
   </div>
 </body>
 </html>

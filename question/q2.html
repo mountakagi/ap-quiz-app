@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ネットワーク - q2</title>
+<title>アルゴリズム（待ち行列） - q2</title>
 <meta name="robots" content="noindex">
 <style>
   body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.8;color:#152238;}
@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-  <h1>応用情報技術者試験 - ネットワーク（q2）</h1>
-  <div class="question">TCPにおいて、送信側が受信側の確認応答を待たずに連続してパケットを送信できる仕組みを何と呼ぶか。</div>
+  <h1>応用情報技術者試験 - アルゴリズム（待ち行列）（q2）</h1>
+  <div class="question">コンピュータによる伝票処理システムがある。このシステムは、伝票データをためる待ち行列をもち、M/M/1の待ち行列モデルが適用できるものとする。平均待ち時間がT秒以上となるのは、システムの利用率が少なくとも何%以上となったときか。</div>
   <ul>
-      <li>ア: フロー制御</li>
-      <li class="correct">イ: ウィンドウ制御</li>
-      <li>ウ: 輻輳制御</li>
-      <li>エ: 誤り制御</li>
+      <li>ア: 33</li>
+      <li class="correct">イ: 50</li>
+      <li>ウ: 67</li>
+      <li>エ: 80</li>
   </ul>
   <div class="explain">
     <div class="label">正解</div>
-    <div>イ: ウィンドウ制御</div>
+    <div>イ: 50</div>
     <div class="label" style="margin-top:14px;">解説</div>
-    <div>ウィンドウ制御（スライディングウィンドウ）により、受信側から通知されたウィンドウサイズの範囲内で複数パケットを確認応答を待たずに送信できる。</div>
+    <div>M/M/1の平均待ち時間は 利用率ρ/(1-ρ)×平均サービス時間 で表される。この式にT秒以上という条件を当てはめると、利用率が50%以上のときに条件を満たす。</div>
   </div>
 </body>
 </html>
