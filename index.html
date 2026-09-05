@@ -498,7 +498,7 @@ function showToast(msg){
 async function askAI(prompt){
   let copied = false;
   try{ await navigator.clipboard.writeText(prompt); copied = true; }catch(e){ copied = false; }
-  window.open("https://claude.ai/new", "_blank");
+  window.open("https://chatgpt.com/", "_blank");
   showToast(copied ? "質問文をコピーしました。入力欄に貼り付けてください" : "自動コピーに失敗しました。手動でコピーしてください");
 }
 
