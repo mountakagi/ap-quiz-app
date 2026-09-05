@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>応用情報 演習</title>
+<style>
+  :root{
+    --paper:#EDF1F5; --ink:#152238; --ink-soft:#4C5A70; --line:#D2DAE3;
+    --card:#FFFFFF; --amber:#C98A2C; --teal:#2F6F6D; --error:#B5533C;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+    --sans: 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--sans);}
+  body{min-height:100vh;-webkit-tap-highlight-color:transparent;}
+  #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+  header{padding:18px 20px 0;background:var(--ink);color:var(--paper);}
+  .brand{font-size:13px;letter-spacing:.02em;color:#9FB0C6;margin:0 0 10px;}
+  .statrow{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:14px;}
+  .stat{display:flex;flex-direction:column;gap:2px;}
+  .stat .num{font-family:var(--mono);font-size:22px;font-weight:600;}
+  .stat .label{font-size:11px;color:#9FB0C6;}
+  .streak-flame{color:var(--amber);}
+  .tabbar{display:flex;gap:0;border-top:1px solid #2A3B54;}
+  .tabbtn{flex:1;text-align:center;padding:12px 0;font-size:14px;font-weight:600;color:#8695AC;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;}
+  .tabbtn.active{color:var(--paper);border-bottom-color:var(--amber);}
+  main{flex:1;padding:20px;}
+  .progressbar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:18px;}
+  .progressbar .fill{height:100%;background:var(--teal);transition:width .3s ease;}
+  .qmeta{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-bottom:10px;}
+  .qmeta .tag{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:2px 8px;}
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px;}
+  .qtext{font-size:16px;line-height:1.7;margin:0;}
+  .choices{display:flex;flex-direction:column;gap:10px;}
+  .choice{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px;font-size:15px;line-height:1.6;text-align:left;cursor:pointer;transition:border-color .15s ease, background .15s ease;width:100%;}
+  .choice:active{background:#F7F9FB;}
+  .choice .mark{font-family:var(--mono);font-weight:600;color:var(--ink-soft);flex-shrink:0;width:18px;}
+  .choice.correct{border-color:var(--teal);background:#EAF3F2;}
+  .choice.correct .mark{color:var(--teal);}
+  .choice.wrong{border-color:var(--error);background:#F8ECE8;}
+  .choice.wrong .mark{color:var(--error);}
+  .choice.disabled{cursor:default;}
+  .explain{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);font-size:14px;line-height:1.7;color:var(--ink-soft);}
+  .explain .head{font-family:var(--mono);font-size:12px;color:var(--ink);margin-bottom:6px;font-weight:600;}
+  .nextbtn{width:100%;padding:14px;margin-top:16px;background:var(--ink);color:var(--paper);border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;}
+  .nextbtn:active{opacity:.85;}
+  .footer-note{text-align:center;font-size:11px;color:var(--ink-soft);padding:10px 20px 24px;}
+  .done{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:28px 20px;text-align:center;}
+  .done .big{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--teal);}
+  .done .sub{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  .resetbtn{margin-top:18px;padding:10px 18px;background:none;border:1px solid var(--line);border-radius:6px;font-size:13px;color:var(--ink-soft);cursor:pointer;}
+  .catlist{margin-top:14px;text-align:left;}
+  .catrow{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line);}
+  .catrow .cname{color:var(--ink-soft);}
+  .catrow .cscore{font-family:var(--mono);}
+  .ai-ask-btn{width:100%;padding:12px;margin-top:10px;background:var(--card);color:var(--teal);border:1px solid var(--teal);border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .ai-ask-btn:active{background:#EAF3F2;}
+  .ai-ask-btn svg{width:16px;height:16px;flex-shrink:0;}
+  .ai-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s ease;max-width:90%;text-align:center;z-index:50;}
+  .ai-toast.show{opacity:1;}
+
+  /* PM (descriptive) mode */
+  .passage{font-size:14px;line-height:1.9;white-space:pre-wrap;color:var(--ink);max-height:260px;overflow-y:auto;padding-right:4px;}
+  .passage-label{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-bottom:8px;font-weight:600;}
+  .subq{border-top:1px solid var(--line);padding-top:14px;margin-top:14px;}
+  .subq:first-of-type{border-top:none;margin-top:0;padding-top:0;}
+  .subq-prompt{font-size:14px;line-height:1.7;margin-bottom:8px;}
+  .subq-input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font-size:14px;font-family:var(--sans);resize:vertical;min-height:44px;}
+  .subq-answer{margin-top:8px;background:#EAF3F2;border:1px solid var(--teal);border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.6;color:var(--ink);}
+  .subq-answer .label{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:600;margin-bottom:4px;}
+  .revealbtn{width:100%;padding:12px;margin-top:16px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;}
+  .selfgrade{display:flex;gap:10px;margin-top:14px;}
+  .selfgrade button{flex:1;padding:12px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);}
+  .selfgrade button.ok{border-color:var(--teal);color:var(--teal);}
+  .selfgrade button.ng{border-color:var(--error);color:var(--error);}
+  .pm-title{font-size:15px;font-weight:600;margin:0 0 10px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ====== 設定 ======
+const SITE_BASE_URL = "https://mountakagi.github.io/ap-quiz-app";
+// ====================
+
+let QUESTIONS = [];    // 午前（多肢選択式）
+let PM_QUESTIONS = []; // 午後（記述式）
+const STORAGE_KEY = "ap-quiz-progress-v1";
+
+let state = {
+  mode: "am",
+  order: [], idx: 0, selected: null,
+  pmIdx: 0, pmRevealed: false,
+  history: {}, streakDays: 0, lastPlayedDate: null, totalAnswered: 0, _setCorrect: 0
+};
+
+function shuffledOrder(arr){
+  const a = arr.map((_, i) => i);
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function loadProgress(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const saved = JSON.parse(raw);
+      state.history = saved.history || {};
+      state.streakDays = saved.streakDays || 0;
+      state.lastPlayedDate = saved.lastPlayedDate || null;
+      state.totalAnswered = saved.totalAnswered || 0;
+    }
+  }catch(e){ console.error("load failed", e); }
+}
+
+function saveProgress(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      history: state.history, streakDays: state.streakDays,
+      lastPlayedDate: state.lastPlayedDate, totalAnswered: state.totalAnswered
+    }));
+  }catch(e){ console.error("save failed", e); }
+}
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+
+function bumpStreak(){
+  const today = todayStr();
+  if(state.lastPlayedDate === today) return;
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yesterday = y.getFullYear()+"-"+(y.getMonth()+1)+"-"+y.getDate();
+  state.streakDays = (state.lastPlayedDate === yesterday) ? state.streakDays + 1 : 1;
+  state.lastPlayedDate = today;
+}
+
+function recordAnswer(cat, correct){
+  if(!state.history[cat]) state.history[cat] = {correct:0, total:0};
+  state.history[cat].total += 1;
+  if(correct){ state.history[cat].correct += 1; state._setCorrect += 1; }
+  state.totalAnswered += 1;
+  bumpStreak();
+  saveProgress();
+}
+
+function renderTabs(){
+  return `
+    <div class="tabbar">
+      <button class="tabbtn ${state.mode==='am'?'active':''}" id="tabAm">午前（多肢選択）</button>
+      <button class="tabbtn ${state.mode==='pm'?'active':''}" id="tabPm">午後（記述式）</button>
+    </div>
+  `;
+}
+
+function headerHtml(){
+  return `
+    <header>
+      <p class="brand">応用情報技術者試験・演習</p>
+      <div class="statrow">
+        <div class="stat"><span class="num streak-flame">${state.streakDays}日</span><span class="label">連続学習</span></div>
+        <div class="stat"><span class="num">${state.totalAnswered}</span><span class="label">総回答数</span></div>
+      </div>
+      ${renderTabs()}
+    </header>
+  `;
+}
+
+function bindTabs(){
+  document.getElementById("tabAm").onclick = () => { state.mode = "am"; render(); };
+  document.getElementById("tabPm").onclick = () => { state.mode = "pm"; render(); };
+}
+
+function render(){
+  if(state.mode === "pm"){ renderPM(); return; }
+  renderAM();
+}
+
+// ---------- 午前（多肢選択式） ----------
+
+function renderAM(){
+  const app = document.getElementById("app");
+  if(QUESTIONS.length === 0){
+    app.innerHTML = headerHtml() + `<main><div class="qcard">午前問題のデータがまだありません。</div></main>`;
+    bindTabs();
+    return;
+  }
+  if(state.idx >= state.order.length){ renderDone(app); return; }
+  const q = QUESTIONS[state.order[state.idx]];
+  const progressPct = Math.round((state.idx / state.order.length) * 100);
+
+  app.innerHTML = headerHtml() + `
+    <main>
+      <div class="progressbar"><div class="fill" style="width:${progressPct}%"></div></div>
+      <div class="qmeta"><span class="tag">${q.category}</span><span>Q${state.idx+1}/${state.order.length}</span></div>
+      <div class="qcard"><p class="qtext">${q.text}</p></div>
+      <div class="choices" id="choices"></div>
+      <div id="explainWrap"></div>
+    </main>
+    <p class="footer-note">個人学習用・記録は端末に保存されます</p>
+  `;
+  bindTabs();
+
+  const choicesEl = document.getElementById("choices");
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.innerHTML = `<span class="mark">${"アイウエ"[i]}</span><span>${c}</span>`;
+    btn.onclick = () => selectChoice(i, q);
+    choicesEl.appendChild(btn);
+  });
+
+  if(state.selected !== null) showResult(q);
+}
+
+function selectChoice(i, q){
+  if(state.selected !== null) return;
+  state.selected = i;
+  recordAnswer(q.category, i === q.answer);
+  showResult(q);
+}
+
+function showResult(q){
+  document.querySelectorAll(".choice").forEach((b, i) => {
+    b.classList.add("disabled");
+    if(i === q.answer) b.classList.add("correct");
+    else if(i === state.selected) b.classList.add("wrong");
+  });
+  const wrap = document.getElementById("explainWrap");
+  wrap.innerHTML = `
+    <div class="qcard explain" style="margin-top:14px;">
+      <div class="head">解説</div>
+      <div>${q.explain}</div>
+    </div>
+    <button class="ai-ask-btn" id="aiAskBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 L14 9 L21 12 L14 15 L12 22 L10 15 L3 12 L10 9 Z"/></svg>
+      この問題をAIに質問する
+    </button>
+    <button class="nextbtn" id="nextBtn">${state.idx+1 < state.order.length ? "次の問題へ" : "結果を見る"}</button>
+  `;
+  document.getElementById("nextBtn").onclick = () => { state.idx += 1; state.selected = null; renderAM(); };
+  document.getElementById("aiAskBtn").onclick = () => askAI(buildAIPromptAM(q));
+}
+
+function buildAIPromptAM(q){
+  const url = `${SITE_BASE_URL}/question/${q.id}.html`;
+  return [
+    "次のIT資格試験の問題ページを開き、掲載されている問題・正答・解説を読み込んだうえで、解説をさらに深掘りしてください。",
+    "",
+    `参照URL: ${url}`,
+    "",
+    "次の順番で、初学者にも分かるように説明してください。",
+    "",
+    "1. 正解に至る判断手順",
+    "",
+    "2. ほかの選択肢が誤りである理由",
+    "",
+    "3. 関連する重要知識",
+    "",
+    "4. 類題での見分け方"
+  ].join("\n");
+}
+
+function renderDone(app){
+  let catRows = "";
+  Object.keys(state.history).forEach(cat => {
+    const h = state.history[cat];
+    catRows += `<div class="catrow"><span class="cname">${cat}</span><span class="cscore">${h.correct}/${h.total}</span></div>`;
+  });
+  app.innerHTML = headerHtml() + `
+    <main>
+      <div class="done">
+        <div class="big">${state._setCorrect}/${state.order.length}</div>
+        <div class="sub">今回の正答数</div>
+        <div class="catlist">${catRows}</div>
+        <button class="resetbtn" id="restartBtn">もう一度演習する</button>
+      </div>
+    </main>
+  `;
+  bindTabs();
+  document.getElementById("restartBtn").onclick = () => {
+    state.order = shuffledOrder(QUESTIONS); state.idx = 0; state.selected = null; state._setCorrect = 0; renderAM();
+  };
+}
+
+// ---------- 午後（記述式） ----------
+
+function renderPM(){
+  const app = document.getElementById("app");
+  if(PM_QUESTIONS.length === 0){
+    app.innerHTML = headerHtml() + `<main><div class="qcard">午後問題のデータがまだありません。</div></main>`;
+    bindTabs();
+    return;
+  }
+  const q = PM_QUESTIONS[state.pmIdx];
+
+  app.innerHTML = headerHtml() + `
+    <main>
+      <div class="qmeta"><span class="tag">${q.category}</span><span>午後 ${state.pmIdx+1}/${PM_QUESTIONS.length}</span></div>
+      <div class="qcard">
+        <p class="pm-title">${q.title}</p>
+        <div class="passage-label">事例文</div>
+        <div class="passage">${q.passage}</div>
+      </div>
+      <div class="qcard" id="subqWrap"></div>
+      <button class="revealbtn" id="revealBtn">${state.pmRevealed ? "解答例を隠す" : "解答例を見る"}</button>
+      <div id="selfgradeWrap"></div>
+      <div id="pmAiWrap"></div>
+    </main>
+    <p class="footer-note">個人学習用・記録は端末に保存されます</p>
+  `;
+  bindTabs();
+
+  const subqWrap = document.getElementById("subqWrap");
+  q.subQuestions.forEach((sq, i) => {
+    const block = document.createElement("div");
+    block.className = "subq";
+    block.innerHTML = `
+      <div class="subq-prompt"><strong>${sq.id}</strong> ${sq.prompt}</div>
+      <textarea class="subq-input" placeholder="ここに自分の解答を書いてみる（省略可）" data-idx="${i}"></textarea>
+      ${state.pmRevealed ? `<div class="subq-answer"><div class="label">解答例</div><div>${sq.modelAnswer}</div></div>` : ""}
+    `;
+    subqWrap.appendChild(block);
+  });
+
+  document.getElementById("revealBtn").onclick = () => { state.pmRevealed = !state.pmRevealed; renderPM(); };
+
+  const gradeWrap = document.getElementById("selfgradeWrap");
+  if(state.pmRevealed){
+    gradeWrap.innerHTML = `
+      <div class="selfgrade">
+        <button class="ok" id="pmOkBtn">できた</button>
+        <button class="ng" id="pmNgBtn">できなかった</button>
+      </div>
+    `;
+    document.getElementById("pmOkBtn").onclick = () => selfGradePM(q, true);
+    document.getElementById("pmNgBtn").onclick = () => selfGradePM(q, false);
+
+    const aiWrap = document.getElementById("pmAiWrap");
+    aiWrap.innerHTML = `
+      <button class="ai-ask-btn" id="pmAiAskBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 L14 9 L21 12 L14 15 L12 22 L10 15 L3 12 L10 9 Z"/></svg>
+        この問題をAIに質問する
+      </button>
+    `;
+    document.getElementById("pmAiAskBtn").onclick = () => askAI(buildAIPromptPM(q));
+  }
+}
+
+function selfGradePM(q, correct){
+  recordAnswer(q.category, correct);
+  state.pmRevealed = false;
+  state.pmIdx = (state.pmIdx + 1) % PM_QUESTIONS.length;
+  renderPM();
+}
+
+function buildAIPromptPM(q){
+  const url = `${SITE_BASE_URL}/pm/${q.id}.html`;
+  return [
+    "次のIT資格試験（午後・記述式）の問題ページを開き、掲載されている事例文・設問・解答例を読み込んだうえで、解説してください。",
+    "",
+    `参照URL: ${url}`,
+    "",
+    "次の順番で、初学者にも分かるように説明してください。",
+    "",
+    "1. 各設問の解答例に至る考え方",
+    "",
+    "2. 部分点になりやすいポイントや、よくある誤答パターン",
+    "",
+    "3. 関連する重要知識",
+    "",
+    "4. 類題での考え方のコツ"
+  ].join("\n");
+}
+
+// ---------- 共通 ----------
+
+function showToast(msg){
+  let el = document.getElementById("aiToast");
+  if(!el){ el = document.createElement("div"); el.id = "aiToast"; el.className = "ai-toast"; document.getElementById("app").appendChild(el); }
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => el.classList.remove("show"), 2600);
+}
+
+async function askAI(prompt){
+  let copied = false;
+  try{ await navigator.clipboard.writeText(prompt); copied = true; }catch(e){ copied = false; }
+  window.open("https://claude.ai/new", "_blank");
+  showToast(copied ? "質問文をコピーしました。入力欄に貼り付けてください" : "自動コピーに失敗しました。手動でコピーしてください");
+}
+
+(async function init(){
+  try{
+    const res = await fetch("./questions.json");
+    QUESTIONS = await res.json();
+  }catch(e){ console.error("AM load failed", e); }
+  try{
+    const resPm = await fetch("./questions-pm.json");
+    PM_QUESTIONS = await resPm.json();
+  }catch(e){ console.error("PM load failed", e); }
+
+  loadProgress();
+  state.order = shuffledOrder(QUESTIONS);
+  render();
+})();
+</script>
+</body>
+</html>
