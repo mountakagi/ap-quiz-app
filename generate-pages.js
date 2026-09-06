@@ -9,8 +9,48 @@ const questions = JSON.parse(fs.readFileSync(path.join(__dirname, "questions.jso
 const outDir = path.join(__dirname, "question");
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-const pmPath = path.join(__dirname, "questions-pm.json");
-const pmQuestions = fs.existsSync(pmPath) ? JSON.parse(fs.readFileSync(pmPath, "utf-8")) : [];
+// questions-pm.json に加え、questions-pm-*.json という名前のファイルも
+// すべて自動的に読み込んでマージする（例: questions-pm-2025r07a.json）。
+// 新しい年度・回のデータを追加するときは、同じ命名規則のファイルを
+// ルートに置くだけでよく、このスクリプトを毎回書き換える必要はない。
+const pmFiles = fs
+  .readdirSync(__dirname)
+  .filter((f) => /^questions-pm.*\.json$/.test(f))
+  .sort();
+
+let pmQuestions = [];
+const seenIds = new Map(); // id -> 由来ファイル名（重複検知用）
+
+pmFiles.forEach((file) => {
+  const filePath = path.join(__dirname, file);
+  let list;
+  try {
+    list = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch (e) {
+    console.warn(`警告: ${file} の読み込みに失敗しました（${e.message}）。スキップします。`);
+    return;
+  }
+
+  list.forEach((q) => {
+    if (seenIds.has(q.id)) {
+      // idが重複している場合は上書きで消えないよう、出力ファイル名だけ
+      // ファイル名由来のサフィックスを付けて分離する。
+      const suffix = path.basename(file, ".json").replace(/^questions-pm-?/, "") || "dup";
+      const newOutId = `${q.id}-${suffix}`;
+      console.warn(
+        `警告: id "${q.id}" が ${seenIds.get(q.id)} と ${file} で重複しています。` +
+        ` ${file} 側は出力ファイル名を "${newOutId}" に変更して生成します。`
+      );
+      pmQuestions.push({ ...q, outId: newOutId });
+    } else {
+      seenIds.set(q.id, file);
+      pmQuestions.push({ ...q, outId: q.id });
+    }
+  });
+
+  console.log(`読み込み: ${file}（${list.length}件）`);
+});
+
 const pmOutDir = path.join(__dirname, "pm");
 if (!fs.existsSync(pmOutDir)) fs.mkdirSync(pmOutDir, { recursive: true });
 
@@ -107,9 +147,9 @@ function renderPmPage(q){
 }
 
 pmQuestions.forEach((q) => {
-  const filePath = path.join(pmOutDir, `${q.id}.html`);
+  const filePath = path.join(pmOutDir, `${q.outId}.html`);
   fs.writeFileSync(filePath, renderPmPage(q), "utf-8");
-  console.log(`生成: pm/${q.id}.html`);
+  console.log(`生成: pm/${q.outId}.html`);
 });
 
 console.log(`完了: 午前${questions.length}件・午後${pmQuestions.length}件のページを生成しました。`);
