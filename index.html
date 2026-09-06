@@ -118,7 +118,9 @@ let PM_QUESTIONS = []; // 午後（記述式）
 const STORAGE_KEY = "ap-quiz-progress-v2";
 
 let state = {
-  screen: "home", // home | am | pm
+  screen: "yearList", // yearList | seasonList | typeList | amList | pmList | am | pm
+  currentYear: null,
+  currentSession: null,
   currentAmId: null,
   currentPmId: null,
   selected: null,
@@ -203,15 +205,47 @@ function headerHtml(showBack){
   `;
 }
 
+const BACK_MAP = {
+  seasonList: "yearList",
+  typeList: "seasonList",
+  amList: "typeList",
+  pmList: "typeList",
+  am: "amList",
+  pm: "pmList"
+};
+
 function bindBack(){
   const b = document.getElementById("backHome");
-  if(b) b.onclick = () => { state.screen = "home"; state.selected = null; state.pmRevealed = false; render(); };
+  if(b) b.onclick = () => {
+    state.screen = BACK_MAP[state.screen] || "yearList";
+    state.selected = null; state.pmRevealed = false;
+    render();
+  };
 }
 
 function render(){
-  if(state.screen === "am") { renderAmQuestion(); return; }
-  if(state.screen === "pm") { renderPmQuestion(); return; }
-  renderHome();
+  switch(state.screen){
+    case "yearList": renderYearList(); break;
+    case "seasonList": renderSeasonList(); break;
+    case "typeList": renderTypeList(); break;
+    case "amList": renderAmList(); break;
+    case "pmList": renderPmList(); break;
+    case "am": renderAmQuestion(); break;
+    case "pm": renderPmQuestion(); break;
+    default: renderYearList();
+  }
+}
+
+function sessionYear(sessionId){
+  const m = String(sessionId).match(/^(\d{4})/);
+  return m ? m[1] : sessionId;
+}
+
+function allSessions(){
+  return Array.from(new Set([
+    ...QUESTIONS.map(q => q.session),
+    ...PM_QUESTIONS.map(q => q.session)
+  ])).filter(Boolean);
 }
 
 // ---------- ホーム画面 ----------
@@ -227,78 +261,112 @@ function dotsHtml(qid){
   return html;
 }
 
-function renderHome(){
+function listRowHtml(attr, value, label, sub){
+  return `
+    <div class="pmarea-row" data-${attr}="${value}">
+      <div class="pmarea-left"><span class="pmarea-name">${label}</span></div>
+      ${sub ? `<span style="font-size:11px;color:var(--ink-soft);">${sub}</span>` : ""}
+    </div>`;
+}
+
+// 第1階層: 年一覧
+function renderYearList(){
   const app = document.getElementById("app");
-  const sessions = Array.from(new Set([
-    ...QUESTIONS.map(q => q.session),
-    ...PM_QUESTIONS.map(q => q.session)
-  ])).filter(Boolean);
+  const years = Array.from(new Set(allSessions().map(sessionYear))).sort((a,b) => b.localeCompare(a));
 
-  let sessionsHtml = "";
-  sessions.forEach(sessionId => {
-    const label = SESSION_LABELS[sessionId] || sessionId;
-    const amMap = {};
-    QUESTIONS.filter(q => q.session === sessionId).forEach(q => amMap[q.number] = q);
-    const pmMap = {};
-    PM_QUESTIONS.filter(q => q.session === sessionId).forEach(q => pmMap[q.areaNumber] = q);
+  let html = years.map(y => listRowHtml("year", y, `${y}年度`)).join("");
+  if(!html) html = `<div class="qcard">まだ問題データがありません。</div>`;
 
-    let amCells = "";
-    for(let n = 1; n <= AM_TOTAL; n++){
-      const q = amMap[n];
-      if(q){
-        amCells += `<div class="qcell" data-am="${q.id}"><div class="n">${n}</div>${dotsHtml(q.id)}</div>`;
-      }else{
-        amCells += `<div class="qcell empty"><div class="n">${n}</div></div>`;
-      }
-    }
+  app.innerHTML = headerHtml(false) + `
+    <main>
+      <div class="section-label"><span>年度を選択</span></div>
+      <div>${html}</div>
+    </main>
+    <p class="footer-note">個人学習用・記録は端末に保存されます</p>
+  `;
 
-    let pmRows = "";
-    PM_AREAS.forEach((name, i) => {
-      const areaNum = i + 1;
-      const q = pmMap[areaNum];
-      if(q){
-        pmRows += `
-          <div class="pmarea-row" data-pm="${q.id}">
-            <div class="pmarea-left"><span class="pmarea-num">問${areaNum}</span><span class="pmarea-name">${name}</span></div>
-            ${dotsHtml(q.id)}
-          </div>`;
-      }else{
-        pmRows += `
-          <div class="pmarea-row empty">
-            <div class="pmarea-left"><span class="pmarea-num">問${areaNum}</span><span class="pmarea-name">${name}</span></div>
-            <span style="font-size:11px;color:var(--ink-soft);">未収録</span>
-          </div>`;
-      }
-    });
-
-    sessionsHtml += `
-      <div class="session-block">
-        <p class="session-title">${label}</p>
-        <p class="session-sub">午後は必須の問1（情報セキュリティ）＋選択10問中4問を解答する形式です</p>
-        <div class="section-label"><span>午前（1〜${AM_TOTAL}）</span></div>
-        <div class="qgrid" data-session="${sessionId}">${amCells}</div>
-        <button class="randombtn" data-random="${sessionId}">この回をランダム演習する</button>
-        <div class="section-label" style="margin-top:18px;"><span>午後（分野別・11問）</span></div>
-        <div>${pmRows}</div>
-      </div>
-    `;
+  app.querySelectorAll("[data-year]").forEach(el => {
+    el.onclick = () => { state.currentYear = el.getAttribute("data-year"); state.screen = "seasonList"; render(); };
   });
+}
 
-  if(!sessionsHtml){
-    sessionsHtml = `<div class="qcard">まだ問題データがありません。</div>`;
+// 第2階層: 季節（回）一覧
+function renderSeasonList(){
+  const app = document.getElementById("app");
+  const sessions = allSessions().filter(sid => sessionYear(sid) === state.currentYear);
+
+  let html = sessions.map(sid => listRowHtml("session", sid, SESSION_LABELS[sid] || sid)).join("");
+  if(!html) html = `<div class="qcard">この年度のデータがありません。</div>`;
+
+  app.innerHTML = headerHtml(true) + `
+    <main>
+      <div class="section-label"><span>${state.currentYear}年度 - 回を選択</span></div>
+      <div>${html}</div>
+    </main>
+    <p class="footer-note">個人学習用・記録は端末に保存されます</p>
+  `;
+  bindBack();
+
+  app.querySelectorAll("[data-session]").forEach(el => {
+    el.onclick = () => { state.currentSession = el.getAttribute("data-session"); state.screen = "typeList"; render(); };
+  });
+}
+
+// 第3階層: 午前・午後を選択
+function renderTypeList(){
+  const app = document.getElementById("app");
+  const label = SESSION_LABELS[state.currentSession] || state.currentSession;
+
+  app.innerHTML = headerHtml(true) + `
+    <main>
+      <div class="section-label"><span>${label}</span></div>
+      ${listRowHtml("type", "am", `午前（問1〜${AM_TOTAL}）`)}
+      ${listRowHtml("type", "pm", "午後（問1〜11・分野別）")}
+    </main>
+    <p class="footer-note">個人学習用・記録は端末に保存されます</p>
+  `;
+  bindBack();
+
+  app.querySelectorAll("[data-type]").forEach(el => {
+    const type = el.getAttribute("data-type");
+    el.onclick = () => { state.screen = (type === "am") ? "amList" : "pmList"; render(); };
+  });
+}
+
+// 第4階層(午前): 問1〜80 一覧
+function renderAmList(){
+  const app = document.getElementById("app");
+  const sid = state.currentSession;
+  const label = SESSION_LABELS[sid] || sid;
+  const amMap = {};
+  QUESTIONS.filter(q => q.session === sid).forEach(q => amMap[q.number] = q);
+
+  let amCells = "";
+  for(let n = 1; n <= AM_TOTAL; n++){
+    const q = amMap[n];
+    if(q){
+      amCells += `<div class="qcell" data-am="${q.id}"><div class="n">${n}</div>${dotsHtml(q.id)}</div>`;
+    }else{
+      amCells += `<div class="qcell empty"><div class="n">${n}</div></div>`;
+    }
   }
 
-  app.innerHTML = headerHtml(false) + `<main>${sessionsHtml}</main><p class="footer-note">個人学習用・記録は端末に保存されます</p>`;
+  app.innerHTML = headerHtml(true) + `
+    <main>
+      <div class="section-label"><span>${label}・午前（1〜${AM_TOTAL}）</span></div>
+      <div class="qgrid">${amCells}</div>
+      <button class="randombtn" id="randomBtn">この回をランダム演習する</button>
+    </main>
+    <p class="footer-note">個人学習用・記録は端末に保存されます</p>
+  `;
+  bindBack();
 
   app.querySelectorAll("[data-am]").forEach(el => {
     el.onclick = () => { state.currentAmId = el.getAttribute("data-am"); state.selected = null; state.screen = "am"; render(); };
   });
-  app.querySelectorAll("[data-pm]").forEach(el => {
-    el.onclick = () => { state.currentPmId = el.getAttribute("data-pm"); state.pmRevealed = false; state.screen = "pm"; render(); };
-  });
-  app.querySelectorAll("[data-random]").forEach(el => {
-    el.onclick = () => {
-      const sid = el.getAttribute("data-random");
+  const randomBtn = document.getElementById("randomBtn");
+  if(randomBtn){
+    randomBtn.onclick = () => {
       const pool = QUESTIONS.filter(q => q.session === sid);
       if(pool.length === 0) return;
       state.order = shuffledOrder(pool).map(i => pool[i].id);
@@ -308,6 +376,48 @@ function renderHome(){
       state.screen = "am";
       render();
     };
+  }
+}
+
+// 第4階層(午後): 問1〜11 分野一覧
+function renderPmList(){
+  const app = document.getElementById("app");
+  const sid = state.currentSession;
+  const label = SESSION_LABELS[sid] || sid;
+  const pmMap = {};
+  PM_QUESTIONS.filter(q => q.session === sid).forEach(q => pmMap[q.areaNumber] = q);
+
+  let pmRows = "";
+  PM_AREAS.forEach((name, i) => {
+    const areaNum = i + 1;
+    const q = pmMap[areaNum];
+    if(q){
+      pmRows += `
+        <div class="pmarea-row" data-pm="${q.id}">
+          <div class="pmarea-left"><span class="pmarea-num">問${areaNum}</span><span class="pmarea-name">${name}</span></div>
+          ${dotsHtml(q.id)}
+        </div>`;
+    }else{
+      pmRows += `
+        <div class="pmarea-row empty">
+          <div class="pmarea-left"><span class="pmarea-num">問${areaNum}</span><span class="pmarea-name">${name}</span></div>
+          <span style="font-size:11px;color:var(--ink-soft);">未収録</span>
+        </div>`;
+    }
+  });
+
+  app.innerHTML = headerHtml(true) + `
+    <main>
+      <div class="section-label"><span>${label}・午後（分野別・11問）</span></div>
+      <p class="session-sub">必須の問1（情報セキュリティ）＋選択10問中4問を解答する形式です</p>
+      <div>${pmRows}</div>
+    </main>
+    <p class="footer-note">個人学習用・記録は端末に保存されます</p>
+  `;
+  bindBack();
+
+  app.querySelectorAll("[data-pm]").forEach(el => {
+    el.onclick = () => { state.currentPmId = el.getAttribute("data-pm"); state.pmRevealed = false; state.screen = "pm"; render(); };
   });
 }
 
@@ -316,7 +426,7 @@ function renderHome(){
 function renderAmQuestion(){
   const app = document.getElementById("app");
   const q = QUESTIONS.find(x => x.id === state.currentAmId);
-  if(!q){ state.screen = "home"; renderHome(); return; }
+  if(!q){ state.screen = "yearList"; renderYearList(); return; }
 
   app.innerHTML = headerHtml(true) + `
     <main>
@@ -373,7 +483,7 @@ function showResult(q){
       state.selected = null;
       renderAmQuestion();
     }else{
-      state.screen = "home"; state.selected = null; render();
+      state.screen = "amList"; state.selected = null; render();
     }
   };
   document.getElementById("aiAskBtn").onclick = () => askAI(buildAIPromptAM(q));
@@ -403,7 +513,7 @@ function buildAIPromptAM(q){
 function renderPmQuestion(){
   const app = document.getElementById("app");
   const q = PM_QUESTIONS.find(x => x.id === state.currentPmId);
-  if(!q){ state.screen = "home"; renderHome(); return; }
+  if(!q){ state.screen = "yearList"; renderYearList(); return; }
 
   app.innerHTML = headerHtml(true) + `
     <main>
@@ -460,7 +570,7 @@ function renderPmQuestion(){
 
 function selfGradePM(q, correct){
   recordAnswer(q.id, q.category, correct);
-  state.screen = "home";
+  state.screen = "pmList";
   state.pmRevealed = false;
   render();
 }
